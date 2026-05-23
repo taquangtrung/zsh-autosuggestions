@@ -671,7 +671,9 @@ _zsh_autosuggest_strategy_history() {
 	local key candidate first_word
 	for key in $history_match_keys; do
 		candidate=$history[$key]
-		first_word=${${(z)candidate}[1]}
+		# First whitespace-delimited token. Avoid (z) shell tokenization,
+		# which would split "./build.sh" into "." and "/build.sh".
+		first_word=${candidate%%[[:space:]]*}
 		[[ -z $first_word ]] && continue
 
 		if whence -- "$first_word" >/dev/null 2>&1; then
